@@ -15,7 +15,7 @@
 			:effect (lambda ())))
 (defparameter *test* (make-move
 		      :name "test"
-		      :type 'bug;super effective against dark
+		      :type 'bug ; super effective against dark
 		      :pp-current 10
 		      :pp-max 10
 		      :accuracy 100
