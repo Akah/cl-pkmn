@@ -1,6 +1,7 @@
 # ignore:
 # emacs unsaved files
 *~
+*#
 # compiled lisp files
 *.fasl
 # html generated from viewing readme locally

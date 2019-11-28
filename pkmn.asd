@@ -8,6 +8,6 @@
   :serial      t
   :components ((:file "package")
 	       (:file "src/data/structs")
-               (:file "src/pkmn")
+	       (:file "src/battle/effectiveness")
 	       (:file "src/battle/battle")
-	       (:file "src/battle/effectiveness")))
+               (:file "src/pkmn")))
