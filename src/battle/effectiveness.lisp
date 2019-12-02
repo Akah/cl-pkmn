@@ -3,8 +3,8 @@
 ;;make assoc-array of types numbered
 ;;number represents order in the array of effectivenesses
 
-(defparameter *types* '(normal fire water electric grass ice fighting poison flying
-			psychic bug rock ghost dragon dark steel))
+(defparameter *types* '(normal fire water electric grass ice fighting poison ground
+			flying psychic bug rock ghost dragon dark steel))
 
 (defparameter *table* '(;no fr wa el gr ic fg po gd fl ps bg ro gh dr da st
 			(10 10 10 10 10 10 10 10 10 10 10 10  5  0 10 10  5)  ;normal
@@ -34,4 +34,4 @@
   (/ (nested
       (position (move-type move) *types*)
       (position (pkmn-type defender) *types*)
-      *table*) 10)) 
+      *table*) 10))
