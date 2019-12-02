@@ -1,5 +1,7 @@
 (in-package #:pkmn)
 
+(defparameter *kill* nil)
+
 ;;===================================PRINT==========================================
 
 (defun print-battle-status (player enemy)
@@ -111,16 +113,16 @@
       (fight   (fight player enemy))
       (bag     (bag))      ;does nothing
       (pokemon (pokemon))  ;does nothing
-      (run     (run))      ;does nothing
+      (run     (run))      ;quits program
       (t       (write-line "invalid input")))
     (incf loop-count)
     (if (and (is-alive player)
-	     (is-alive enemy))
+		 (is-alive enemy))
 	(battle player enemy loop-count)
 	;;else
 	(if (is-alive player)
-	    (format t "~a wins~%" player)
+	    (format t "~a wins~%" (pkmn-name player))
 	    ;;else
-	    (format t "~a wins~%" enemy)))))
+	    (format t "~a wins~%" (pkmn-name enemy))))))
   
   
