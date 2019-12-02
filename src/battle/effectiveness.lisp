@@ -27,7 +27,7 @@
 
 ;; should become a macro to return from n nested lists
 (defun nested (x y lst)
-  (nth x (nth y lst)))
+  (nth y (nth x lst)))
 
 (defun get-effectiveness (move defender)
   "return a value of 0, 0.5, 1, 2 based on effectiveness of move used on defender"
@@ -35,3 +35,21 @@
       (position (move-type move) *types*)
       (position (pkmn-type defender) *types*)
       *table*) 10))
+
+;;; for debug / testing only ;;;
+(defun debug-effectiveness (move defender)
+  "debugging test of get-effectiveness function"
+  (/ (nested
+      (position move *types*)
+      (position defender *types*)
+      *table*) 10)
+  (nested
+   (position move *types*)
+   (position defender *types*)
+   *table*))
+ 
+(defun test-effectiveness ()
+  "test for all cases"
+  (loop for i in *types*
+     do (loop for j in *types*
+	   do (format t "~a -> ~a = ~a ~%" i j (effectiveness i j)))))
