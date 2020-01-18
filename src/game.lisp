@@ -50,8 +50,8 @@
 		       :title "CL - PKMN"
 		       :w *width*
 		       :h *height*
-		       :x (- 1920 *width* 12) ;for development
-		       :y 80                  ;for development
+		       :x 0
+		       :y (- 1080 *height*)
 		       :flags '(:shown))
       (sdl2:with-renderer (renderer
 			   win
