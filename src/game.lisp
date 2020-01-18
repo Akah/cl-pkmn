@@ -1,19 +1,63 @@
-;; to be made again using sdl2
+(defparameter *scale* 3)
+(defparameter *width*  (* 13 16 *scale*))
+(defparameter *height* (* 11 16 *scale*))
 
-(defun start-game ()
-  "initialise window and start game-loop"
+(defparameter *x* 0)
+(defparameter *y* 0)
+
+(defun test-render-clear (renderer)
+  (sdl2:set-render-draw-color renderer 0 0 0 255)
+  (sdl2:render-clear renderer))
+
+(defun test-render-fill-rects (renderer)
+  (multiple-value-bind (rects num)
+      (apply #'sdl2:rects*
+             (loop :for x :upto 5
+                :collect (sdl2:make-rect (+ 500 (* x 10)) 400 8 8)))
+    (sdl2:set-render-draw-color renderer 255 0 255 255)
+    (sdl2:render-fill-rects renderer rects num)))
+
+(defun draw (renderer)
+  (sdl2:set-render-draw-color renderer 100 100 255 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect *x* *y* 100 100)))
+
+(defun draw2 (renderer)
+  (sdl2:set-render-draw-color renderer 100 100 255 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 200 200 100 100)))
+
+(defun main-loop (renderer)
+  (test-render-clear renderer)
+  ;;
+  (draw renderer)
+  (draw2 renderer)
+  ;;
+  (sdl2:render-present renderer)
+  (sdl2:delay 10))
+
+(defun init ()
+  "Test the SDL_render.h API"
   (sdl2:with-init (:everything)
     (sdl2:with-window (win
-		       :title "cl-pkmn"
+		       :title "CL - PKMN"
+		       :w *width*
+		       :h *height*
+		       :x (- 1920 *width* 12) ;for development
+		       :y 80                  ;for development
 		       :flags '(:shown))
-      (sdl2:with-renderer (renderer win :flags '(accelerated))
-	(sdl2:with-event-loop (:method :poll)
-	  (:keyup
-	   (:keysym keysym)
-	   (when
-	       (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape) ; quit on escape
-	     (sdl2:push-event :quit)))
-	  (:idle ()
-		 ;;do functions here
-		 (sdl2:delay 10))
-	  (:quit () t))))))
+      (sdl2:with-renderer (renderer
+			   win
+			   :flags '(:accelerated))
+        (sdl2:with-event-loop (:method :poll)
+          (:keyup
+           (:keysym keysym)
+	   (format t "~s~%" (sdl2:scancode-value keysym))
+           (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
+             (sdl2:push-event :quit)))
+          (:idle
+	   ()
+	   (main-loop renderer))
+          (:quit () t))))))
+
+(defun init-game ()
+  (init))
+
