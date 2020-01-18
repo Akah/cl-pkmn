@@ -18,21 +18,30 @@
     (sdl2:render-fill-rects renderer rects num)))
 
 (defun draw (renderer)
-  (sdl2:set-render-draw-color renderer 100 100 255 0)
-  (sdl2:render-fill-rect renderer (sdl2:make-rect *x* *y* 100 100)))
-
-(defun draw2 (renderer)
-  (sdl2:set-render-draw-color renderer 100 100 255 0)
-  (sdl2:render-fill-rect renderer (sdl2:make-rect 200 200 100 100)))
+  (sdl2:set-render-draw-color renderer 255 0 0 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect *x* *y* 16 16)))
 
 (defun main-loop (renderer)
   (test-render-clear renderer)
   ;;
-  (draw renderer)
   (draw2 renderer)
+  (draw renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
+
+(defun handle-key (keysym)
+  (format t "Key pressed: ~s~%" (sdl2:scancode-value keysym))
+  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
+    (sdl2:push-event :quit))
+  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-left)
+    (setq *x* (- *x* 10)))
+  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-right)
+    (setq *x* (+ 10 *x*)))
+  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-up)
+    (setq *y* (- *y* 10)))
+  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-down)
+    (setq *y* (+ 10 *y*))))
 
 (defun init ()
   "Test the SDL_render.h API"
@@ -50,9 +59,7 @@
         (sdl2:with-event-loop (:method :poll)
           (:keyup
            (:keysym keysym)
-	   (format t "~s~%" (sdl2:scancode-value keysym))
-           (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
-             (sdl2:push-event :quit)))
+	   (handle-key keysym))
           (:idle
 	   ()
 	   (main-loop renderer))
