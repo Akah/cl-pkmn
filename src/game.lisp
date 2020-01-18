@@ -22,6 +22,7 @@
   (sdl2:render-fill-rect renderer (sdl2:make-rect *x* *y* 16 16)))
 
 (defun main-loop (renderer)
+  "main game loop called in init environment"
   (test-render-clear renderer)
   ;;
   (draw2 renderer)
@@ -31,6 +32,7 @@
   (sdl2:delay 10))
 
 (defun handle-key (keysym)
+  "take an input and map to output for the key"
   (format t "Key pressed: ~s~%" (sdl2:scancode-value keysym))
   (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
     (sdl2:push-event :quit))
@@ -44,7 +46,7 @@
     (setq *y* (+ 10 *y*))))
 
 (defun init ()
-  "Test the SDL_render.h API"
+  "initilise gui and start main loop"
   (sdl2:with-init (:everything)
     (sdl2:with-window (win
 		       :title "CL - PKMN"
@@ -60,11 +62,5 @@
           (:keyup
            (:keysym keysym)
 	   (handle-key keysym))
-          (:idle
-	   ()
-	   (main-loop renderer))
+          (:idle () (main-loop renderer))
           (:quit () t))))))
-
-(defun init-game ()
-  (init))
-
