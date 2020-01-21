@@ -25,7 +25,6 @@
   "main game loop called in init environment"
   (test-render-clear renderer)
   ;;
-  (draw2 renderer)
   (draw renderer)
   ;;
   (sdl2:render-present renderer)

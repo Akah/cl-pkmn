@@ -14,4 +14,5 @@
 	       (:file "src/data/structs")
 	       (:file "src/battle/effectiveness")
 	       (:file "src/battle/battle")
+	       (:file "src/game")
 	       (:file "src/pkmn")))
