@@ -73,9 +73,15 @@
       (sdl2:with-renderer (renderer
 			   win
 			   :flags '(:accelerated))
+	(sdl2-image:init '(:png))
         (sdl2:with-event-loop (:method :poll)
           (:keyup
            (:keysym keysym)
 	   (handle-key keysym))
-          (:idle () (main-loop renderer win))
-          (:quit () t))))))
+          (:idle
+	   ()
+	   (main-loop renderer win))
+          (:quit
+	   ()
+	   (sdl2-image:quit)
+	   t))))))
