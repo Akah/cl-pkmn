@@ -30,7 +30,7 @@
   
   (let* ((image (sdl2-image:load-image "espeon-front.png"))
 	 (texture (sdl2:create-texture-from-surface renderer image)))
-    (sdl2:render-copy renderer texture (sdl2:make-rect 100 100 100 100) (sdl2:make-rect 200 200 200 200)))
+    (sdl2:render-copy renderer texture '(sdl2:make-rect 100 100 100 100) '(sdl2:make-rect 200 200 200 200)))
   
   (sdl2-image:quit))
 
