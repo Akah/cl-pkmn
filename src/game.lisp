@@ -1,3 +1,7 @@
+;;;; game.lisp
+
+(in-package #:pkmn)
+
 (defparameter *scale* 3)
 (defparameter *width*  (* 13 16 *scale*))
 (defparameter *height* (* 11 16 *scale*))
@@ -21,11 +25,21 @@
   (sdl2:set-render-draw-color renderer 255 0 0 0)
   (sdl2:render-fill-rect renderer (sdl2:make-rect *x* *y* 16 16)))
 
-(defun main-loop (renderer)
+(defun draw-img (renderer)
+  (sdl2-image:init '(:png))
+  
+  (let* ((image (sdl2-image:load-image "espeon-front.png"))
+	 (texture (sdl2:create-texture-from-surface renderer image)))
+    (sdl2:render-copy renderer texture (sdl2:make-rect 100 100 100 100) (sdl2:make-rect 200 200 200 200)))
+  
+  (sdl2-image:quit))
+
+(defun main-loop (renderer win)
   "main game loop called in init environment"
   (test-render-clear renderer)
   ;;
   (draw renderer)
+  (draw-img renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
@@ -51,8 +65,8 @@
 		       :title "CL - PKMN"
 		       :w *width*
 		       :h *height*
-		       :x 0
-		       :y (- 1080 *height*)
+		       :x (- 1910 *width*)
+		       :y 80;(- 1080 *height*)
 		       :flags '(:shown))
       (sdl2:with-renderer (renderer
 			   win
@@ -61,5 +75,5 @@
           (:keyup
            (:keysym keysym)
 	   (handle-key keysym))
-          (:idle () (main-loop renderer))
+          (:idle () (main-loop renderer win))
           (:quit () t))))))
