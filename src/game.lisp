@@ -10,7 +10,7 @@
 (defparameter *y* 0)
 
 (defun test-render-clear (renderer)
-  (sdl2:set-render-draw-color renderer 0 0 0 255)
+  (sdl2:set-render-draw-color renderer 255 255 255 0)
   (sdl2:render-clear renderer))
 
 (defun test-render-fill-rects (renderer)
@@ -25,23 +25,35 @@
   (sdl2:set-render-draw-color renderer 255 0 0 0)
   (sdl2:render-fill-rect renderer (sdl2:make-rect *x* *y* 16 16)))
 
+(defun draw-player-stat-holder (renderer)
+  (sdl2:set-render-draw-color renderer 0 0 0 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 300 300 (* *scale* 50) *scale*))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 306 297 9 3))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 312 294 9 6))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 318 291 9 9))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 438 291 15 9))
+  (sdl2:set-render-draw-color renderer 70 100 225 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect 388 291 50 3)))
+
 (defun draw-img (renderer)
   (sdl2-image:init '(:png))
   
   (let* ((image (sdl2-image:load-image "espeon-front.png"))
-	 (dst-rect (sdl2:make-rect 5 5 200 200))
+	 (dst-rect (sdl2:make-rect 100 100 150 150))
 	 (texture (sdl2:create-texture-from-surface renderer image)))
     (sdl2:render-copy renderer texture
 		      :dest-rect dst-rect))
   
   (sdl2-image:quit))
 
-(defun main-loop (renderer win)
+(defun main-loop (renderer)
   "main game loop called in init environment"
   (test-render-clear renderer)
   ;;
   (draw renderer)
-  (draw-img renderer)
+  ;;(draw-img renderer)
+  ;;(draw-text-box renderer)
+  (draw-player-stat-holder renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
@@ -80,7 +92,7 @@
 	   (handle-key keysym))
           (:idle
 	   ()
-	   (main-loop renderer win))
+	   (main-loop renderer))
           (:quit
 	   ()
 	   (sdl2-image:quit)
