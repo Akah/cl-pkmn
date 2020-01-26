@@ -43,9 +43,11 @@
 	   ,@body))
     (sdl2-image:quit)))
 
-(defun draw-img (renderer)
-  (let* ((image (sdl2-image:load-image "espeon-front.png"))
-	 (dst-rect (sdl2:make-rect 100 100 150 150))
+(defun draw-img (src x y renderer)
+  (let* ((image (sdl2-image:load-image src))
+	 (width (sdl2:surface-width image))
+	 (height (sdl2:surface-height image))
+	 (dst-rect (sdl2:make-rect x y width height))
 	 (texture (sdl2:create-texture-from-surface renderer image)))
     (sdl2:render-copy renderer texture :dest-rect dst-rect)))
 
@@ -54,9 +56,7 @@
   (test-render-clear renderer)
   ;;
   (draw renderer)
-  (draw-img renderer)
-  ;;(draw-text-box renderer)
-  (draw-player-stat-holder renderer)
+  (draw-img "/home/rob/quicklisp/local-projects/cl-pkmn/res/img/espeon-back.png" 40 200 renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
