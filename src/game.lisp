@@ -35,23 +35,26 @@
   (sdl2:set-render-draw-color renderer 70 100 225 0)
   (sdl2:render-fill-rect renderer (sdl2:make-rect 388 291 50 3)))
 
+(defmacro with-image-init (&body body)
+  `(progn
+    (sdl2-image:init '(:png))
+    (unwind-protect
+	 (progn
+	   ,@body))
+    (sdl2-image:quit)))
+
 (defun draw-img (renderer)
-  (sdl2-image:init '(:png))
-  
   (let* ((image (sdl2-image:load-image "espeon-front.png"))
 	 (dst-rect (sdl2:make-rect 100 100 150 150))
 	 (texture (sdl2:create-texture-from-surface renderer image)))
-    (sdl2:render-copy renderer texture
-		      :dest-rect dst-rect))
-  
-  (sdl2-image:quit))
+    (sdl2:render-copy renderer texture :dest-rect dst-rect)))
 
 (defun main-loop (renderer)
   "main game loop called in init environment"
   (test-render-clear renderer)
   ;;
   (draw renderer)
-  ;;(draw-img renderer)
+  (draw-img renderer)
   ;;(draw-text-box renderer)
   (draw-player-stat-holder renderer)
   ;;
@@ -85,8 +88,8 @@
       (sdl2:with-renderer (renderer
 			   win
 			   :flags '(:accelerated))
-	(sdl2-image:init '(:png))
-        (sdl2:with-event-loop (:method :poll)
+	(with-image-init
+	  (sdl2:with-event-loop (:method :poll)
           (:keyup
            (:keysym keysym)
 	   (handle-key keysym))
@@ -96,4 +99,5 @@
           (:quit
 	   ()
 	   (sdl2-image:quit)
-	   t))))))
+	   t)))))))
+        
