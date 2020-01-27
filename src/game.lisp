@@ -43,11 +43,14 @@
 	   ,@body))
     (sdl2-image:quit)))
 
+(defun scale (num)
+  (* *scale* num))
+
 (defun draw-img (src x y renderer)
   (let* ((image (sdl2-image:load-image src))
 	 (width (sdl2:surface-width image))
 	 (height (sdl2:surface-height image))
-	 (dst-rect (sdl2:make-rect x y width height))
+	 (dst-rect (sdl2:make-rect x y (scale width) (scale height)))
 	 (texture (sdl2:create-texture-from-surface renderer image)))
     (sdl2:render-copy renderer texture :dest-rect dst-rect)))
 
@@ -56,7 +59,10 @@
   (test-render-clear renderer)
   ;;
   (draw renderer)
-  (draw-img "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png" 40 200 renderer)
+  (draw-img "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png"
+	    40 200 renderer)
+  (draw-img "/home/rob/quicklisp/local-projects/pkmn/res/img/umbreon-front.png"
+	    420 20 renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
