@@ -56,7 +56,7 @@
   (test-render-clear renderer)
   ;;
   (draw renderer)
-  (draw-img "/home/rob/quicklisp/local-projects/cl-pkmn/res/img/espeon-back.png" 40 200 renderer)
+  (draw-img "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png" 40 200 renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))

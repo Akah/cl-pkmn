@@ -8,8 +8,7 @@
   :serial      t
   :depends-on (#:cl-opengl
 	       #:sdl2
-	       #:sdl2-image
-	       #:sdl2-mixer)
+	       #:sdl2-image)
   :components ((:module
 		#:res
 		:components ((:static-file "res/img/espeon-front.png")
