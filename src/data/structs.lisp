@@ -28,3 +28,8 @@
   power     ; int
   effect
   category)
+
+(defstruct render-item
+  src
+  x
+  y)

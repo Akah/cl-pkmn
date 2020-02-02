@@ -54,24 +54,47 @@
 	 (texture (sdl2:create-texture-from-surface renderer image)))
     (sdl2:render-copy renderer texture :dest-rect dst-rect)))
 
+(defun draw-stack (render-stack renderer)
+  (dolist (item render-stack)
+    (draw-img (render-item-src item)
+	      (render-item-x item)
+	      (render-item-y item)
+	      renderer)))
+
+(defvar render-stack
+  '((make-render-item
+     :src "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png"
+     :x 40
+     :y 200)
+    (make-render-item
+     :src "/home/rob/quicklisp/local-projects/pkmn/res/img/umbreon-front.png"
+     :x 420
+     :y 40)))
+
 (defun main-loop (renderer)
   "main game loop called in init environment"
   (test-render-clear renderer)
   ;;
   (draw renderer)
-  (draw-img "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png"
-	    40 200 renderer)
-  (draw-img "/home/rob/quicklisp/local-projects/pkmn/res/img/umbreon-front.png"
-	    420 20 renderer)
+  (draw-stack render-stack renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
+
+(let ((paused nil))
+  (defun toggle-pause ()
+    (setq paused (not paused))
+    paused)
+  (defun value-pause ()
+    paused))
 
 (defun handle-key (keysym)
   "take an input and map to output for the key"
   (format t "Key pressed: ~s~%" (sdl2:scancode-value keysym))
   (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
     (sdl2:push-event :quit))
+  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-grave)
+    (toggle-pause))
   (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-left)
     (setq *x* (- *x* 10)))
   (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-right)
@@ -101,7 +124,8 @@
 	   (handle-key keysym))
           (:idle
 	   ()
-	   (main-loop renderer))
+	   (unless (value-pause)
+	     (main-loop renderer)))
           (:quit
 	   ()
 	   (sdl2-image:quit)
