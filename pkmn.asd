@@ -9,19 +9,9 @@
   :depends-on (#:cl-opengl
 	       #:sdl2
 	       #:sdl2-image)
-  :components ((:module
-		#:res
-		:components ((:static-file "res/img/espeon-front.png")
-			     (:static-file "res/img/espeon-back.png")
-			     (:static-file "res/img/umbreon-front.png")
-			     (:static-file "res/img/umbreon-back.png")))
-		(:module
-		 #:src
-		 :components ((:file "package")
+  :components ((:file "package")
 			      (:file "src/data/structs")
 			      (:file "src/battle/effectiveness")
 			      (:file "src/battle/battle")
 			      (:file "src/game")
-			      (:file "src/pkmn")))))
-  
-
+			      (:file "src/pkmn")))
