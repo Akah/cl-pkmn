@@ -1,8 +1,14 @@
 # ignore:
+
 # emacs unsaved files
 *~
 *#
+
 # compiled lisp files
 *.fasl
+
+# make build
+pkmn
+
 # html generated from viewing readme locally
 README.html*
