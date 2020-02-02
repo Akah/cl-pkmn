@@ -70,3 +70,6 @@
     (setf (stats-hp (pkmn-stats *espeon*)) 65)
     (setf (stats-hp (pkmn-stats *umbreon*)) 95)
     (battle player enemy)))
+
+(defun main ()
+  (init))

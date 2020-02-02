@@ -1,4 +1,5 @@
 ;;;; package.lisp
 
 (defpackage #:pkmn
-  (:use #:cl))
+  (:use #:cl)
+  (:export :main))
