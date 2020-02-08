@@ -15,7 +15,7 @@
 			      (:file "src/data/structs")
 			      (:file "src/battle/effectiveness")
 			      (:file "src/battle/battle")
-			      (:file "src/game")
+			      (:file "src/graphics/game")
 			      (:file "src/pkmn")))
 
 #+sb-core-compression

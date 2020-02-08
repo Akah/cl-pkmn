@@ -54,22 +54,27 @@
 	 (texture (sdl2:create-texture-from-surface renderer image)))
     (sdl2:render-copy renderer texture :dest-rect dst-rect)))
 
-(defun draw-stack (render-stack renderer)
-  (dolist (item render-stack)
-    (draw-img (render-item-src item)
-	      (render-item-x item)
-	      (render-item-y item)
-	      renderer)))
-
-(defvar render-stack
-  '((make-render-item
+(defvar item-1
+  (make-item
      :src "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png"
      :x 40
-     :y 200)
-    (make-render-item
+     :y 200))
+
+(defvar item-2
+  (make-item
      :src "/home/rob/quicklisp/local-projects/pkmn/res/img/umbreon-front.png"
      :x 420
-     :y 40)))
+     :y 40))
+
+(defvar render-stack
+  '(item-1 item-2))
+
+(defun draw-stack (render-stack renderer)
+  (dolist (item render-stack)
+    (draw-img (item-src item)
+	      (item-x item)
+	      (item-y item)
+	      renderer)))
 
 (defun main-loop (renderer)
   "main game loop called in init environment"

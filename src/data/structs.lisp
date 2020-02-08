@@ -29,7 +29,7 @@
   effect
   category)
 
-(defstruct render-item
+(defstruct item
   src
   x
   y)
