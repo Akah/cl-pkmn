@@ -12,11 +12,12 @@
 	       #:sdl2
 	       #:sdl2-image)
   :components ((:file "package")
-			      (:file "src/data/structs")
-			      (:file "src/battle/effectiveness")
-			      (:file "src/battle/battle")
-			      (:file "src/graphics/game")
-			      (:file "src/pkmn")))
+	       (:file "src/data/structs")
+	       (:file "src/battle/effectiveness")
+	       (:file "src/battle/battle")
+	       (:file "src/graphics/font")
+	       (:file "src/graphics/game")
+	       (:file "src/pkmn")))
 
 #+sb-core-compression
 (defmethod asdf:perform ((o asdf:image-op) (c asdf:system))
