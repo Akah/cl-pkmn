@@ -11,13 +11,11 @@
   (loop for x from 1 to (length string)
      collect (subseq string (1- x) x)))
 
-(defun get-coordinates (char)
-  (cond ((string= char "A") 0)
-	((string= char "B") 0)
-	((string= char "C") 0)
-	((string= char "D") 0)
-	((string= char "E") 0)
-	((string= char "F") 0)))
+(defun get-coordinate (char)
+  (char-code (character char)))
 
-;;(defun as-text (string)
-;;  (let ((chars (split-string string)))))
+(defun get-coordinates (chars)
+  (mapcar (lambda (char) (get-coordinate char)) chars))
+
+(defun string-to-coordinates (string)
+  (get-coordinates (split-string string)))
