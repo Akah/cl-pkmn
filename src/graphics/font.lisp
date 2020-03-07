@@ -9,13 +9,10 @@
 
 (defun split-string (string)
   (loop for x from 1 to (length string)
-     collect (subseq string (1- x) x)))
-
-(defun get-coordinate (char)
-  (char-code (character char)))
+     collect (character (subseq string (1- x) x))))
 
 (defun get-coordinates (chars)
-  (mapcar (lambda (char) (get-coordinate char)) chars))
+  (mapcar (lambda (char) (char-code char)) chars))
 
 (defun string-to-coordinates (string)
   (get-coordinates (split-string string)))
