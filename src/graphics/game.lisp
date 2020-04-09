@@ -9,7 +9,7 @@
 (defparameter *x* 0)
 (defparameter *y* 0)
 
-(defun test-render-clear (renderer)
+(defun render-clear (renderer)
   (sdl2:set-render-draw-color renderer 255 255 255 0)
   (sdl2:render-clear renderer))
 
@@ -54,34 +54,12 @@
 	 (texture (sdl2:create-texture-from-surface renderer image)))
     (sdl2:render-copy renderer texture :dest-rect dst-rect)))
 
-(defvar item-1
-  (make-item
-     :src "/home/rob/quicklisp/local-projects/pkmn/res/img/espeon-back.png"
-     :x 40
-     :y 200))
-
-(defvar item-2
-  (make-item
-     :src "/home/rob/quicklisp/local-projects/pkmn/res/img/umbreon-front.png"
-     :x 420
-     :y 40))
-
-(defvar render-stack
-  '(item-1 item-2))
-
-(defun draw-stack (render-stack renderer)
-  (dolist (item render-stack)
-    (draw-img (item-src item)
-	      (item-x item)
-	      (item-y item)
-	      renderer)))
-
 (defun main-loop (renderer)
   "main game loop called in init environment"
-  (test-render-clear renderer)
+  (render-clear renderer)
   ;;
   (draw renderer)
-  (draw-stack render-stack renderer)
+  ;;(draw-stack render-stack renderer)
   ;;
   (sdl2:render-present renderer)
   (sdl2:delay 10))
@@ -113,11 +91,11 @@
   "initilise gui and start main loop"
   (sdl2:with-init (:everything)
     (sdl2:with-window (win
-		       :title "CL - PKMN"
+		       :title "PKMN"
 		       :w *width*
 		       :h *height*
-		       :x (- 1910 *width*)
-		       :y 80;(- 1080 *height*)
+		       :x (- 1353 *width*)
+		       :y 37;(- 1080 *height*)
 		       :flags '(:shown))
       (sdl2:with-renderer (renderer
 			   win

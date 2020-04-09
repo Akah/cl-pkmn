@@ -15,5 +15,3 @@
   (mapcar (lambda (char) (- (char-code char) 33))
 	    (loop for x from 1 to (length string)
 	       collect (character (subseq string (1- x) x)))))
-
-
