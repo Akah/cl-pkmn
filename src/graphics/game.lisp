@@ -9,6 +9,8 @@
 (defparameter *x* 0)
 (defparameter *y* 0)
 
+(defparameter block-time 0)
+
 (defun render-clear (renderer)
   (sdl2:set-render-draw-color renderer 255 255 255 0)
   (sdl2:render-clear renderer))
@@ -46,6 +48,9 @@
 (defun scale (num)
   (* *scale* num))
 
+(defun print-debug (level string)
+  (format t "[~a] ~a~%" level string))
+
 (defun draw-img (src x y renderer)
   (let* ((image (sdl2-image:load-image src))
 	 (width (sdl2:surface-width image))
@@ -62,7 +67,9 @@
   ;;(draw-stack render-stack renderer)
   ;;
   (sdl2:render-present renderer)
-  (sdl2:delay 10))
+  (when (< 0 block-time)
+    (decf block-time))
+  (sdl2:delay 10)) ;; replace with proper game loop timer
 
 (let ((paused nil))
   (defun toggle-pause ()
@@ -73,22 +80,24 @@
 
 (defun handle-key (keysym)
   "take an input and map to output for the key"
-  (format t "Key pressed: ~s~%" (sdl2:scancode-value keysym))
   (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-escape)
     (sdl2:push-event :quit))
-  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-grave)
-    (toggle-pause))
-  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-left)
-    (setq *x* (- *x* 10)))
-  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-right)
-    (setq *x* (+ 10 *x*)))
-  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-up)
-    (setq *y* (- *y* 10)))
-  (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-down)
-    (setq *y* (+ 10 *y*))))
+  (unless (> block-time 1)
+    (setf block-time 60)
+    (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-grave)
+      (toggle-pause))
+    (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-left)
+      (setq *x* (- *x* 10)))
+    (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-right)
+      (setq *x* (+ 10 *x*)))
+    (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-up)
+      (setq *y* (- *y* 10)))
+    (when (sdl2:scancode= (sdl2:scancode-value keysym) :scancode-down)
+      (setq *y* (+ 10 *y*)))))
 
 (defun init ()
   "initilise gui and start main loop"
+  (write-line "init game")
   (sdl2:with-init (:everything)
     (sdl2:with-window (win
 		       :title "PKMN"
@@ -102,7 +111,7 @@
 			   :flags '(:accelerated))
 	(with-image-init
 	  (sdl2:with-event-loop (:method :poll)
-          (:keyup
+          (:keydown
            (:keysym keysym)
 	   (handle-key keysym))
           (:idle
