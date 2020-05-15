@@ -10,8 +10,7 @@
   :build-operation "asdf:program-op"
   :entry-point "pkmn:main"
   ;; TODO check if cl-opengl is actually needed...
-  :depends-on (#:cl-opengl
-	       #:sdl2
+  :depends-on (#:sdl2
 	       #:sdl2-image)
   :components ((:file "package")
 	       (:file "src/data/structs")
