@@ -76,7 +76,7 @@
 	(print-debug :error (format nil "Failed to load file: ~a" font))
 	(print-debug :info (format nil " Loaded file: ~a" font)))))
 
-(defun draw-img (img renderer x y w h start-x start-y end-x end-y)
+(defun draw-img (&key img renderer  x y w h start-x start-y end-x end-y)
   "draw image from xy to wh with optional start and end for cropping"
   ;; TODO: currently optional params are not optional...
   (let* ((texture (sdl2:create-texture-from-surface renderer img))
@@ -87,30 +87,27 @@
     (sdl2:free-rect src-rect)
     (sdl2:free-rect dst-rect)))
 
-(defvar one nil)
-
 (defun draw-char (indexes renderer font-image x y)
   "Take in a list of numbers and draw corresponding the characters starting at point x y"
   (loop for position-in-list in indexes
        for i from 0
        do (multiple-value-bind (row column)
 	      (floor position-in-list 16)
-	    (draw-img font-image
-		      renderer
-		      (* 8 i (+ 1 x))
-		      y
-		      8
-		      8
-		      (* 8 column)
-		      (* 8 row)
-		      8
-		      8))))
+	    (draw-img :img font-image
+		      :renderer renderer
+		      :x (* 8 i (+ 1 x))
+		      :y y
+		      :w 8
+		      :h 8
+		      :start-x (* 8 column)
+		      :start-y (* 8 row)
+		      :end-x 8
+		      :end-y 8))))
 
 (defun main-loop (renderer)
   "main game loop called in init environment"
   (render-clear renderer)  
   ;;
-  ;;(draw-img font-image renderer 0 0 8 8 8 32 8 8)
   (draw-char (string-to-index "ABCDEFGHIJKLMNOPQRSTUVWXYZ") renderer font-image 0 0)
   (draw-char (string-to-index "abcdefghijklmnopqrstuvwxyz") renderer font-image 0 8)
   (draw-char (string-to-index "!\"/$%^&*()?[]{|}") renderer font-image 0 16)
