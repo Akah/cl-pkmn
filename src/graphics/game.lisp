@@ -46,6 +46,12 @@
 	   ,@body))
     (sdl2-image:quit)))
 
+;; TODO: move into utils file/package
+(defun any-nil (&rest values)
+  (some #'(lambda (values)
+	     (null values))
+	 values))
+
 (defun scale (num)
   (* *scale* num))
 
@@ -64,29 +70,55 @@
 
 (defun load-media ()
   (let* ((stem "/home/rob/quicklisp/local-projects/cl-pkmn/res/img/")
-	 (font (concatenate 'string stem "font-v2.png")))
+	 (font (concatenate 'string stem "font-v3-4.png")))
     (setf font-image (sdl2-image:load-image font))
     (if (eq font-image nil)
 	(print-debug :error (format nil "Failed to load file: ~a" font))
 	(print-debug :info (format nil " Loaded file: ~a" font)))))
 
-(defun draw-img (img window)
-  ;(print-debug :debug window)
-  ;(print-debug :debug (format nil "img: ~a" img))
-  (let ((screen (sdl2:get-window-surface window)))
-    (sdl2:blit-surface img nil screen nil)
-    (sdl2:update-window window)))
+(defun draw-img (img renderer x y w h start-x start-y end-x end-y)
+  "draw image from xy to wh with optional start and end for cropping"
+  ;; TODO: currently optional params are not optional...
+  (let* ((texture (sdl2:create-texture-from-surface renderer img))
+	 (src-rect (sdl2:make-rect start-x start-y end-x end-y))
+	 (dst-rect (sdl2:make-rect (scale x) (scale y) (scale w) (scale h))))
+    (sdl2:render-copy renderer texture :source-rect src-rect :dest-rect dst-rect)
+    (sdl2:destroy-texture texture)
+    (sdl2:free-rect src-rect)
+    (sdl2:free-rect dst-rect)))
 
-(defun main-loop (window)
+(defvar one nil)
+
+(defun draw-char (indexes renderer font-image x y)
+  "Take in a list of numbers and draw corresponding the characters starting at point x y"
+  (loop for position-in-list in indexes
+       for i from 0
+       do (multiple-value-bind (row column)
+	      (floor position-in-list 16)
+	    (draw-img font-image
+		      renderer
+		      (* 8 i (+ 1 x))
+		      y
+		      8
+		      8
+		      (* 8 column)
+		      (* 8 row)
+		      8
+		      8))))
+
+(defun main-loop (renderer)
   "main game loop called in init environment"
-  ;(render-clear renderer)
+  (render-clear renderer)  
   ;;
-  (draw-img font-image window)
+  ;;(draw-img font-image renderer 0 0 8 8 8 32 8 8)
+  (draw-char (string-to-index "ABCDEFGHIJKLMNOPQRSTUVWXYZ") renderer font-image 0 0)
+  (draw-char (string-to-index "abcdefghijklmnopqrstuvwxyz") renderer font-image 0 8)
+  (draw-char (string-to-index "!\"/$%^&*()?[]{|}") renderer font-image 0 16)
   ;;
-  ;(sdl2:render-present renderer)
+  (sdl2:render-present renderer)
   (when (< 0 block-time)
     (decf block-time))
-  (sdl2:delay 10)) ;; replace with proper game loop timer
+  (sdl2:delay 100)) ;; replace with proper game loop timer
 
 (let ((paused nil))
   (defun toggle-pause ()
@@ -119,9 +151,9 @@
 		       :x (- 1353 *width*)
 		       :y 37;(- 1080 *height*)
 		       :flags '(:shown))
-      ;;(sdl2:with-renderer (renderer
-      ;;		   window
-      ;;		   :flags '(:accelerated))
+      (sdl2:with-renderer (renderer
+			   window
+			   :flags '(:accelerated))
 	(with-image-init
 	  ;; after inits, code to be run before loop starts
 	  (load-media)
@@ -130,7 +162,6 @@
 		    (handle-key keysym))
           (:idle ()
 		 (unless (value-pause)
-		   (main-loop window)))
+		   (main-loop renderer)))
           (:quit ()
 		 (sdl2-image:quit) t)))))))
-        
