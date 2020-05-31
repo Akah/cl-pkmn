@@ -90,12 +90,12 @@
 (defun draw-char (indexes renderer font-image x y)
   "Take in a list of numbers and draw corresponding the characters starting at point x y"
   (loop for position-in-list in indexes
-       for i from 0
+       for i from 1
        do (multiple-value-bind (row column)
 	      (floor position-in-list 16)
 	    (draw-img :img font-image
 		      :renderer renderer
-		      :x (* 8 i (+ 1 x))
+		      :x (+ (* i 8) x)
 		      :y y
 		      :w 8
 		      :h 8
@@ -108,14 +108,20 @@
   "main game loop called in init environment"
   (render-clear renderer)  
   ;;
-  (draw-char (string-to-index "ABCDEFGHIJKLMNOPQRSTUVWXYZ") renderer font-image 0 0)
-  (draw-char (string-to-index "abcdefghijklmnopqrstuvwxyz") renderer font-image 0 8)
-  (draw-char (string-to-index "!\"/$%^&*()?[]{|}") renderer font-image 0 16)
+  (draw-char (string-to-index "POK^DEX") renderer font-image 8 0)
+  (draw-char (string-to-index "POK^MON") renderer font-image 0 16)
+  (draw-char (string-to-index "PACK") renderer font-image 0 32)
+  (draw-char (string-to-index "{|GEAR") renderer font-image 0 48)
+  (draw-char (string-to-index "PLAYER") renderer font-image 0 64)
+  (draw-char (string-to-index "SAVE") renderer font-image 0 80)
+  (draw-char (string-to-index "OPTION") renderer font-image 0 96)
+  (draw-char (string-to-index "EXIT") renderer font-image 0 112)
   ;;
   (sdl2:render-present renderer)
   (when (< 0 block-time)
     (decf block-time))
-  (sdl2:delay 100)) ;; replace with proper game loop timer
+  ;;
+  (sdl2:delay 10)) ;; replace with proper game loop timer
 
 (let ((paused nil))
   (defun toggle-pause ()
@@ -128,9 +134,10 @@
   "take an input and map to output for the key"
   (case (sdl2:scancode keysym)
     (:scancode-escape (sdl2:push-event :quit))
-    (:scancode-grave  (toggle-pause)))
+    (:scancode-grave  (toggle-pause))
+    (:scancode-return (print-debug :info "return pressed")))
   (unless (> block-time 1)
-    (setf block-time 30) ;; ms?
+    (setf block-time 20) ;; ms?
     (case (sdl2:scancode keysym)
       (:scancode-left  (setq *x* (- *x* *tile-size*)))
       (:scancode-right (setq *x* (+ *x* *tile-size*)))
@@ -139,7 +146,6 @@
 
 (defun init ()
   "initilise gui and start main loop"
-  (write-line "init game")
   (sdl2:with-init (:video)
     (sdl2:with-window (window
 		       :title "PKMN"
