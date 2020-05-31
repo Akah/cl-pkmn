@@ -66,25 +66,24 @@
   (let* ((stem "/home/rob/quicklisp/local-projects/cl-pkmn/res/img/")
 	 (font (concatenate 'string stem "font-v2.png")))
     (setf font-image (sdl2-image:load-image font))
-    (print-debug :info (format nil "Loaded file: ~a" font))))
+    (if (eq font-image nil)
+	(print-debug :error (format nil "Failed to load file: ~a" font))
+	(print-debug :info (format nil " Loaded file: ~a" font)))))
 
-(defun draw-img (img x y renderer window)
-  (let* ((width (sdl2:surface-width img))
-	 (height (sdl2:surface-height img))
-	 (dst-rect (sdl2:make-rect x y (scale width) (scale height))))
-    (sdl2:blit-surface img
-		       (sdl2:make-rect 16 0 8 8)
-		       (sdl2:get-window-surface window)
-		       (sdl2:make-rect 0 0 8 8))
-    (sdl2:free-rect dst-rect)))
+(defun draw-img (img window)
+  ;(print-debug :debug window)
+  ;(print-debug :debug (format nil "img: ~a" img))
+  (let ((screen (sdl2:get-window-surface window)))
+    (sdl2:blit-surface img nil screen nil)
+    (sdl2:update-window window)))
 
-(defun main-loop (renderer window)
+(defun main-loop (window)
   "main game loop called in init environment"
   ;(render-clear renderer)
   ;;
-  (draw-img font-image 32 0 renderer window)
+  (draw-img font-image window)
   ;;
-  (sdl2:render-present renderer)
+  ;(sdl2:render-present renderer)
   (when (< 0 block-time)
     (decf block-time))
   (sdl2:delay 10)) ;; replace with proper game loop timer
@@ -112,7 +111,7 @@
 (defun init ()
   "initilise gui and start main loop"
   (write-line "init game")
-  (sdl2:with-init (:everything)
+  (sdl2:with-init (:video)
     (sdl2:with-window (window
 		       :title "PKMN"
 		       :w *width*
@@ -120,22 +119,18 @@
 		       :x (- 1353 *width*)
 		       :y 37;(- 1080 *height*)
 		       :flags '(:shown))
-      (sdl2:with-renderer (renderer
-			   window
-			   :flags '(:accelerated))
+      ;;(sdl2:with-renderer (renderer
+      ;;		   window
+      ;;		   :flags '(:accelerated))
 	(with-image-init
 	  ;; after inits, code to be run before loop starts
 	  (load-media)
 	  (sdl2:with-event-loop (:method :poll)
-          (:keydown
-           (:keysym keysym)
-	   (handle-key keysym))
-          (:idle
-	   ()
-	   (unless (value-pause)
-	     (main-loop window renderer)))
-          (:quit
-	   ()
-	   (sdl2-image:quit)
-	   t)))))))
+          (:keydown (:keysym keysym)
+		    (handle-key keysym))
+          (:idle ()
+		 (unless (value-pause)
+		   (main-loop window)))
+          (:quit ()
+		 (sdl2-image:quit) t)))))))
         
