@@ -14,5 +14,6 @@
   "convert string to list of ascii characters shifted by 32 
    (index of font-image)"
   (mapcar (lambda (char) (- (char-code char) 32))
-	    (loop for x from 1 to (length string)
-	       collect (character (subseq string (1- x) x)))))
+   	  (loop for x from 1 to (length string)
+   	     collect (character (subseq string (1- x) x)))))
+

@@ -6,4 +6,4 @@ build:
 
 clean:
 	rm -f pkmn
-	rm -rf *.fasl
+	rm -rf ./*.fasl
