@@ -28,12 +28,6 @@
 			     "option"
 			     "exit"))
 
-
-
-
-
-
-
 (defmacro with-image-init (&body body)
   `(progn
     (sdl2-image:init '(:png))
@@ -63,8 +57,9 @@
     (sdl2:free-rect dst-rect)))
 
 (defun load-media ()
-  (let* ((stem "/home/rob/quicklisp/local-projects/cl-pkmn/res/img/")
-	 (font (concatenate 'string stem "font-v3-4.png")))
+  (let* ((resources "/home/rob/quicklisp/local-projects/cl-pkmn/res/")
+	 (images "/img/")
+	 (font (concatenate 'string resources images"font-v3-4.png")))
     (setf font-image (sdl2-image:load-image font))
     (if (eq font-image nil)
 	(print-debug :error (format nil "Failed to load file: ~a" font))
