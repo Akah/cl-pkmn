@@ -7,17 +7,22 @@
 
 (in-package #:pkmn)
 
+(defparameter *state* :start-menu)
 (defparameter *scale* 2)
 (defparameter *width*  (* 13 16 *scale*))
 (defparameter *height* (* 11 16 *scale*))
+(defparameter *title* "PKMN")
 (defparameter *tile-size* (* *scale* 16))
-
 (defparameter *x* 0)
 (defparameter *y* 8)
-
 (defparameter block-time 0)
-
 (defparameter font-image nil)
+
+;; fps
+(defparameter last-time 0)
+(defparameter current-fps 0)
+(defparameter frames 0)
+(defconstant +fps-interval+ 1000) ;; milliseconds not seconds
 
 (defparameter menu-options '("pokedex"
 			     "pokemon"
@@ -30,11 +35,13 @@
 
 (defmacro with-image-init (&body body)
   `(progn
-    (sdl2-image:init '(:png))
-    (unwind-protect
-	 (progn
-	   ,@body))
-    (sdl2-image:quit)))
+     (sdl2-image:init '(:png))
+     (print-debug :info "Initialising sdl2:image")
+     (unwind-protect
+	  (progn
+	    ,@body))
+     (sdl2-image:quit)
+     (print-debug :info "Killing sdl2:image")))
 
 ;; TODO: move into utils file/package
 (defun any-nil (&rest values)
@@ -65,17 +72,26 @@
 	(print-debug :error (format nil "Failed to load file: ~a" font))
 	(print-debug :info (format nil "Loaded file: ~a" font)))))
 
-(defun main-loop (renderer)
+(defun main-loop (renderer window)
   "main game loop called in init environment"
   (render-clear renderer)  
   ;;
+  (draw-text "WELCOME TO GAME" renderer (floor (- 4 (/ 2 *height*))) (floor (- 62 (/ 2 *width*))))
   (draw-menu renderer font-image)
+  
   ;;
   (sdl2:render-present renderer)
   (when (< 0 block-time)
     (decf block-time))
   ;;
-  (sdl2:delay 10)) ;; replace with proper game loop timer
+  (incf frames)
+  (when (< last-time (- (sdl2:get-ticks) +fps-interval+))
+    (setf last-time (sdl2:get-ticks))
+    (setf current-fps frames)
+    (setf frames 0))
+  (sdl2:set-window-title window (format nil "PKMN - fps: ~a" current-fps))
+  ;;
+  (sdl2:delay 26)) ;; replace with proper game loop timer
 
 (let ((paused nil))
   (defun toggle-pause ()
@@ -111,7 +127,7 @@
      (sdl2:with-init (:video)
        (print-debug :info "Initialising sdl2")
        (sdl2:with-window (window
-			  :title "PKMN"
+			  :title *title*
 			  :w *width*
 			  :h *height*
 			  :x (- 1353 *width*)
@@ -124,7 +140,6 @@
 	   
 	   (print-debug :info "Initialising sdl2-renderer")
 	   (with-image-init
-	     (print-debug :info "Initialising sdl2-image")
 	     ;; after inits, code to be run before loop starts
 	     (load-media)
 	     (sdl2:with-event-loop (:method :poll)
@@ -132,7 +147,7 @@
 			 (handle-key keysym))
 	       (:idle ()
 		      (unless (value-pause)
-			(main-loop renderer)))
+			(main-loop renderer window)))
 	       (:quit ()
 		      (progn
 			(print-debug :info "Quitting sdl2-image")

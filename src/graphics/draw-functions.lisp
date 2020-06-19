@@ -49,6 +49,9 @@
 		      :end-x 8
 		      :end-y 8))))
 
+(defun draw-text (string renderer x y)
+  (draw-char (string-to-index string) renderer font-image x y))
+
 (defun draw-menu (renderer font-image)
   "Draw the main pause menu"
   (draw-char (string-to-index "POK^DEX") renderer font-image 138 8)
