@@ -15,6 +15,7 @@
 	       (:file "src/data/structs")
 	       (:file "src/battle/effectiveness")
 	       (:file "src/battle/battle")
+	       (:file "src/input")
 	       (:file "src/graphics/draw-functions")
 	       (:file "src/graphics/game")
 	       (:file "src/graphics/font")
