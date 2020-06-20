@@ -48,7 +48,7 @@
 		      :start-y (* 8 row)
 		      :end-x 8
 		      :end-y 8))))
-
+ 
 (defun draw-text (string renderer x y)
   (draw-char (string-to-index string) renderer font-image x y))
 
@@ -63,3 +63,14 @@
   (draw-char (string-to-index "OPTION")  renderer font-image 138 104)
   (draw-char (string-to-index "EXIT")    renderer font-image 138 120)
   (draw-char (string-to-index "~") renderer font-image 130 *y*))
+
+(defun draw-start-menu (renderer)
+  (draw-img start-image renderer
+	    :x 33 :y 35 :w 128 :h 56 :start-x 0 :start-y 0 :end-x 128 :end-y 56)
+  ;;(when (eq 0 (mod (sdl2:get-ticks) 3))
+  (when (eq 0 (mod (floor (/ (sdl2:get-ticks) 750)) 2))
+    (draw-text "press any key to start" renderer 8 120)))
+
+(defun draw-state (state renderer)
+  (case state
+    (:start-menu (draw-start-menu renderer))))

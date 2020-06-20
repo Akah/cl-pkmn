@@ -1,10 +1,5 @@
 ;;;; game.lisp
 
-;;; TODO:
-;; * Seperate functions into files i.e input handling, main game loop, drawing
-;;   functions, loading files.
-;; * Correct game loop
-
 (in-package #:pkmn)
 
 (defparameter *state* :start-menu)
@@ -17,12 +12,12 @@
 (defparameter *y* 8)
 (defparameter block-time 0)
 (defparameter font-image nil)
-
+(defparameter start-image nil)
 ;; fps
 (defparameter last-time 0)
 (defparameter current-fps 0)
 (defparameter frames 0)
-(defconstant +fps-interval+ 1000) ;; milliseconds not seconds
+(defconstant +fps-interval+ 1000)
 
 (defparameter menu-options '("pokedex"
 			     "pokemon"
@@ -65,26 +60,29 @@
 
 (defun load-media ()
   (let* ((resources "/home/rob/quicklisp/local-projects/cl-pkmn/res/")
-	 (images "/img/")
-	 (font (concatenate 'string resources images"font-v3-4.png")))
+	 (images "img/")
+	 (font (concatenate 'string resources images "font-v3-4.png"))
+	 (start (concatenate 'string resources images "pokemon.png")))
     (setf font-image (sdl2-image:load-image font))
+    (setf start-image (sdl2-image:load-image start))
     (if (eq font-image nil)
 	(print-debug :error (format nil "Failed to load file: ~a" font))
-	(print-debug :info (format nil "Loaded file: ~a" font)))))
+	(print-debug :info (format nil "Loaded file: ~a" font)))
+    (if (eq start-image nil)
+	(print-debug :error (format nil "Failed to load file: ~a" start))
+	(print-debug :info (format nil "Loaded file: ~a" start)))))
 
 (defun main-loop (renderer window)
   "main game loop called in init environment"
   (render-clear renderer)  
   ;;
-  (draw-text "WELCOME TO GAME" renderer (floor (- 4 (/ 2 *height*))) (floor (- 62 (/ 2 *width*))))
-  (draw-menu renderer font-image)
-  
+  (draw-state *state* renderer)
   ;;
   (sdl2:render-present renderer)
   (when (< 0 block-time)
     (decf block-time))
-  ;;
   (incf frames)
+  ;;(format t "~a~%" frames)
   (when (< last-time (- (sdl2:get-ticks) +fps-interval+))
     (setf last-time (sdl2:get-ticks))
     (setf current-fps frames)
@@ -99,26 +97,6 @@
     paused)
   (defun value-pause ()
     paused))
-
-(defun handle-key (keysym)
-  "take an input and map to output for the key"
-  (case (sdl2:scancode keysym)
-    (:scancode-escape (sdl2:push-event :quit));; swap with menu
-    (:scancode-grave  (toggle-pause)); commandline
-    (:scancode-return (print-debug :info "return pressed")))
-  (unless (> block-time 1)
-    (setf block-time 20) ;; ms?
-    (print-debug :info (format nil "pressed ~a y-pos: ~a" (sdl2:scancode keysym) *y*))
-    (case (sdl2:scancode keysym)
-      (:scancode-left  (setq *x* (- *x* 0)))
-      (:scancode-right (setq *x* (+ *x* 0)))
-      (:scancode-up    (setq *y* (- *y* 16)))
-      (:scancode-down  (setq *y* (+ *y* 16))))))
-      ;; normal player movement
-      ;; (:scancode-left  (setq *x* (- *x* *tile-size*)))
-      ;; (:scancode-right (setq *x* (+ *x* *tile-size*)))
-      ;; (:scancode-up    (setq *y* (- *y* *tile-size*)))
-      ;; (:scancode-down  (setq *y* (+ *y* *tile-size*))))))
 
 (defun init ()
   "initilise gui and start main loop as a thread called sdl2-init"
@@ -144,7 +122,7 @@
 	     (load-media)
 	     (sdl2:with-event-loop (:method :poll)
 	       (:keydown (:keysym keysym)
-			 (handle-key keysym))
+			 (handle-key keysym *state*))
 	       (:idle ()
 		      (unless (value-pause)
 			(main-loop renderer window)))
