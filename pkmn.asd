@@ -12,6 +12,7 @@
   :depends-on (#:sdl2
 	       #:sdl2-image)
   :components ((:file "package")
+	       (:file "src/globals")
 	       (:file "src/data/structs")
 	       (:file "src/battle/effectiveness")
 	       (:file "src/battle/battle")
