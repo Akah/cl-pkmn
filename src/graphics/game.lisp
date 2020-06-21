@@ -45,15 +45,20 @@
   (let* ((resources "/home/rob/quicklisp/local-projects/cl-pkmn/res/")
 	 (images "img/")
 	 (font (concatenate 'string resources images "font-v3-4.png"))
-	 (start (concatenate 'string resources images "pokemon.png")))
+	 (start (concatenate 'string resources images "pokemon.png"))
+	 (characters (concatenate 'string resources images "player-sprites.png")))
     (setf font-image (sdl2-image:load-image font))
     (setf start-image (sdl2-image:load-image start))
+    (setf characters-image (sdl2-image:load-image characters))
     (if (eq font-image nil)
 	(print-debug :error (format nil "Failed to load file: ~a" font))
 	(print-debug :info (format nil "Loaded file: ~a" font)))
     (if (eq start-image nil)
 	(print-debug :error (format nil "Failed to load file: ~a" start))
-	(print-debug :info (format nil "Loaded file: ~a" start)))))
+	(print-debug :info (format nil "Loaded file: ~a" start)))
+    (if (eq characters-image nil)
+	(print-debug :error (format nil "Failed to load file: ~a" characters))
+	(print-debug :info (format nil "Loaded file: ~a" characters)))))
 
 (defun main-loop (renderer window)
   "main game loop called in init environment"
@@ -72,7 +77,7 @@
     (setf frames 0))
   (sdl2:set-window-title window (format nil "PKMN - fps: ~a" current-fps))
   ;;
-  (sdl2:delay 26)) ;; replace with proper game loop timer
+  (sdl2:delay 32)) ;; replace with proper game loop timer, currently forces 30fps
 
 (let ((paused nil))
   (defun toggle-pause ()
@@ -105,7 +110,7 @@
 	     (load-media)
 	     (sdl2:with-event-loop (:method :poll)
 	       (:keydown (:keysym keysym)
-			 (handle-key keysym *state*))
+			 (handle-key keysym))
 	       (:idle ()
 		      (unless (value-pause)
 			(main-loop renderer window)))

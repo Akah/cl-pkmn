@@ -1,5 +1,5 @@
 (in-package #:pkmn)
-
+;;; battle
 (defstruct pkmn
   name  ; string
   stats ;'stats
@@ -29,7 +29,9 @@
   effect
   category)
 
-(defstruct item
-  src
+;;; Player Sprite
+(defstruct player
   x
-  y)
+  y
+  direction
+  moving)

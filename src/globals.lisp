@@ -12,6 +12,8 @@
 (defparameter *x* 0)
 (defparameter *y* 8)
 (defparameter block-time 0)
+;; images
+(defparameter characters-image nil)
 (defparameter font-image nil)
 (defparameter start-image nil)
 ;; fps
@@ -19,3 +21,5 @@
 (defparameter current-fps 0)
 (defparameter frames 0)
 (defconstant +fps-interval+ 1000)
+;;
+(defparameter player (make-player :x 0 :y 0 :direction 0 :moving nil))

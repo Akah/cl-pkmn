@@ -22,12 +22,17 @@
   (sdl2:set-render-draw-color renderer 70 100 225 0)
   (sdl2:render-fill-rect renderer (sdl2:make-rect 388 291 50 3)))
 
-(defun draw-img (img renderer &key x y w h start-x start-y end-x end-y)
+;; TODO: allow variables otherthan x & y to be optional
+(defun draw-img (img renderer &key x y w h start-x start-y end-x end-y flip)
   "draw image from xy to wh with optional start and end for cropping"
+  (unless flip (setf flip 0))
   (let* ((texture (sdl2:create-texture-from-surface renderer img))
 	 (src-rect (sdl2:make-rect start-x start-y end-x end-y))
 	 (dst-rect (sdl2:make-rect (scale x) (scale y) (scale w) (scale h))))
-    (sdl2:render-copy renderer texture :source-rect src-rect :dest-rect dst-rect)
+    (sdl2:render-copy-ex renderer texture
+			 :source-rect src-rect
+			 :dest-rect dst-rect
+			 :flip (list flip))
     (sdl2:destroy-texture texture)
     (sdl2:free-rect src-rect)
     (sdl2:free-rect dst-rect)))
@@ -67,10 +72,25 @@
 (defun draw-start-menu (renderer)
   (draw-img start-image renderer
 	    :x 33 :y 35 :w 128 :h 56 :start-x 0 :start-y 0 :end-x 128 :end-y 56)
-  ;;(when (eq 0 (mod (sdl2:get-ticks) 3))
   (when (eq 0 (mod (floor (/ (sdl2:get-ticks) 750)) 2))
     (draw-text "press any key to start" renderer 8 120)))
 
+(defun draw-player (renderer)
+  (draw-img characters-image renderer
+	    :x (player-x player)
+	    :y (player-y player)
+	    :w 16
+	    :h 16
+	    :start-x (* 16 (pos-from-direction player))
+	    :start-y 0
+	    :end-x 16
+	    :end-y 16
+	    :flip (should-flip player)))
+
+(defun draw-overworld (renderer)
+  (draw-player renderer))
+
 (defun draw-state (state renderer)
   (case state
-    (:start-menu (draw-start-menu renderer))))
+    (:start-menu (draw-start-menu renderer))
+    (:overworld (draw-overworld renderer))))
