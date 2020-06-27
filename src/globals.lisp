@@ -22,4 +22,4 @@
 (defparameter frames 0)
 (defconstant +fps-interval+ 1000)
 ;;
-(defparameter player (make-player :x 0 :y 0 :direction 0 :moving nil))
+(defparameter player (make-player :x 0 :y 0 :direction :right :moving nil))
