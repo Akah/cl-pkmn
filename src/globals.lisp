@@ -23,3 +23,5 @@
 (defconstant +fps-interval+ 1000)
 ;;
 (defparameter player (make-player :x 0 :y 0 :direction :right :moving nil))
+;; resources
+(defconstant +resource-path+ (asdf:system-relative-pathname :pkmn #p"res/"))

@@ -90,7 +90,17 @@
 (defun draw-overworld (renderer)
   (draw-player renderer))
 
+(defun draw-battle (renderer))
+  ;; (when (null 'espeon)
+  ;;   )
+  ;; (let ((espeon nil))
+  ;;   (load-media 'img "espeon-back.png" 'espeon)))
+  ;; draw pokemans
+  ;; draw status bars
+  ;; draw menu
+
 (defun draw-state (state renderer)
   (case state
     (:start-menu (draw-start-menu renderer))
-    (:overworld (draw-overworld renderer))))
+    (:overworld (draw-overworld renderer))
+    (:battle (draw-battle renderer))))

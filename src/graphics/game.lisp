@@ -41,24 +41,12 @@
     (sdl2:destroy-texture texture)
     (sdl2:free-rect dst-rect)))
 
-(defun load-media ()
-  (let* ((resources "/home/rob/quicklisp/local-projects/cl-pkmn/res/")
-	 (images "img/")
-	 (font (concatenate 'string resources images "font-v3-4.png"))
-	 (start (concatenate 'string resources images "pokemon.png"))
-	 (characters (concatenate 'string resources images "player-sprites.png")))
-    (setf font-image (sdl2-image:load-image font))
-    (setf start-image (sdl2-image:load-image start))
-    (setf characters-image (sdl2-image:load-image characters))
-    (if (eq font-image nil)
-	(print-debug :error (format nil "Failed to load file: ~a" font))
-	(print-debug :info (format nil "Loaded file: ~a" font)))
-    (if (eq start-image nil)
-	(print-debug :error (format nil "Failed to load file: ~a" start))
-	(print-debug :info (format nil "Loaded file: ~a" start)))
-    (if (eq characters-image nil)
-	(print-debug :error (format nil "Failed to load file: ~a" characters))
-	(print-debug :info (format nil "Loaded file: ~a" characters)))))
+(defun load-media (location symbol)
+  (let ((file-string (merge-pathnames location +resource-path+)))
+    (setf (symbol-value symbol) (sdl2-image:load-image file-string))
+    (if (eq (symbol-value symbol) nil)
+	(print-debug :error (format nil  "Failed to load file: ~a" file-string))
+	(print-debug :info (format nil "Loaded file: ~a" file-string)))))
 
 (defun main-loop (renderer window)
   "main game loop called in init environment"
@@ -107,7 +95,10 @@
 	   (print-debug :info "Initialising sdl2-renderer")
 	   (with-image-init
 	     ;; after inits, code to be run before loop starts
-	     (load-media)
+	     (load-media "img/font-v3-4.png" 'font-image)
+	     (load-media "img/pokemon.png" 'start-image)
+	     (load-media "img/player-sprites.png" 'characters-image)
+	     
 	     (sdl2:with-event-loop (:method :poll)
 	       (:keydown (:keysym keysym)
 			 (handle-key keysym))
