@@ -20,6 +20,7 @@
 (defparameter last-time 0)
 (defparameter current-fps 0)
 (defparameter frames 0)
+;;
 (defconstant +fps-interval+ 1000)
 ;;
 (defparameter player (make-player :x 0 :y 0 :direction :right :moving nil))

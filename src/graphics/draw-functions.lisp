@@ -38,7 +38,7 @@
     (sdl2:free-rect dst-rect)))
 
 (defun draw-char (indexes renderer font-image x y)
-  "Take in a list of numbers and draw corresponding the characters starting at point x y"
+  "Take list of numbers and draw corresponding the characters starting at point x y"
   (loop for position-in-list in indexes
        for i from 1
        do (multiple-value-bind (row column)
@@ -53,9 +53,6 @@
 		      :start-y (* 8 row)
 		      :end-x 8
 		      :end-y 8))))
- 
-(defun draw-text (string renderer x y)
-  (draw-char (string-to-index string) renderer font-image x y))
 
 (defun draw-menu (renderer font-image)
   "Draw the main pause menu"
@@ -69,13 +66,20 @@
   (draw-char (string-to-index "EXIT")    renderer font-image 138 120)
   (draw-char (string-to-index "~") renderer font-image 130 *y*))
 
+(defun check-asset (file-name symbol)
+  (when (null symbol)
+    (load-media file-name symbol)))
+
 (defun draw-start-menu (renderer)
+  (check-asset "img/pokemon.png" 'start-image)
+  (check-asset "img/font-v3-4.png" 'font-image)
   (draw-img start-image renderer
 	    :x 33 :y 35 :w 128 :h 56 :start-x 0 :start-y 0 :end-x 128 :end-y 56)
   (when (eq 0 (mod (floor (/ (sdl2:get-ticks) 750)) 2))
     (draw-text "press any key to start" renderer 8 120)))
 
 (defun draw-player (renderer)
+  (check-asset "img/player-sprites.png" 'characters-image)
   (draw-img characters-image renderer
 	    :x (player-x player)
 	    :y (player-y player)
@@ -86,6 +90,10 @@
 	    :end-x 16
 	    :end-y 16
 	    :flip (should-flip player)))
+
+ 
+(defun draw-text (string renderer x y)
+  (draw-char (string-to-index string) renderer font-image x y))
 
 (defun draw-overworld (renderer)
   (draw-player renderer))

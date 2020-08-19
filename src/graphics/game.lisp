@@ -90,15 +90,11 @@
 	 (print-debug :info "Initialising sdl2-window")
 	 (sdl2:with-renderer (renderer
 			      window
-			     :flags '(:accelerated))
+			      :flags '(:accelerated))
 	   
 	   (print-debug :info "Initialising sdl2-renderer")
 	   (with-image-init
 	     ;; after inits, code to be run before loop starts
-	     (load-media "img/font-v3-4.png" 'font-image)
-	     (load-media "img/pokemon.png" 'start-image)
-	     (load-media "img/player-sprites.png" 'characters-image)
-	     
 	     (sdl2:with-event-loop (:method :poll)
 	       (:keydown (:keysym keysym)
 			 (handle-key keysym))
