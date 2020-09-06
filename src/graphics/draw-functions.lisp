@@ -23,22 +23,25 @@
   (sdl2:render-fill-rect renderer (sdl2:make-rect 388 291 50 3)))
 
 (defun draw-rect (renderer x y w h)
-  "draw rectangle ")
+  "draw rectangle "
+  (sdl2:render-fill-rect renderer (sdl2:make-rect x y w h)))
 
 (defun draw-box (renderer x y w h)
   "draw box from start (upper-left) to end (lower-right)"
-  
-  (sdl2:set-render-draw-color renderer 255 0 0 0)
-  (sdl2:render-fill-rect renderer (sdl2:make-rect x y w h))
-  (sdl2:set-render-draw-color renderer 0 0 0 0)
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 4 x) y (- w 8) 2))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 2 x) (+ 2 y) 2 2))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect x (+ 4 y) 2 (- h 8)))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 2 x) (+ y (- h 4)) 2 2))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 4 x) (+ 8 h) (- w 8) 2))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ x (- w 4)) (+ 6 h) 2 2))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ x (- w 4)) (+ 2 y) 2 2))
-  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ x (- w 2)) (+ 4 y) 2 (- h 8))))
+  (let ((p1 *scale*)
+	(p2 (* 2 *scale*))
+	(p4 (* 4 *scale*)))
+    (sdl2:set-render-draw-color renderer 255 0 0 0)
+    (draw-rect renderer x y w h)
+    (sdl2:set-render-draw-color renderer 0 0 0 0)
+    (draw-rect renderer (+ x p2) y (- w p4) p1)
+    (draw-rect renderer (+ x (- w p2)) (+ y p1) p1 p1)
+    (draw-rect renderer (+ x (- w p1)) (+ y p2) 2 (- h p4))
+    (draw-rect renderer (+ x (- w p2)) (+ y (- h p2)) p1 p1)
+    (draw-rect renderer (+ x p2) (+ y (- h p1)) (- w p4) p1)
+    (draw-rect renderer (+ x p1) (+ y (- h p2)) p1 p1)
+    (draw-rect renderer x (+ y p2) p1 (- h p4))
+    (draw-rect renderer (+ x p1) (+ y p1) p1 p1)))
 
 ;; TODO: allow variables otherthan x & y to be optional
 (defun draw-img (img renderer &key x y w h start-x start-y end-x end-y flip)
@@ -129,7 +132,8 @@
   (check-asset "img/font-v3-4.png" 'font-image)
   (check-asset "img/umbreon-front.png" 'umbreon-image)
   ;; (draw-text "Umbreon" renderer 0 0)
-  (draw-box renderer 30 20 200 200))
+  (draw-box renderer 0 0 200 200)
+  (draw-box renderer 250 70 100 100))
   ;; (when (null 'espeon)
   ;;   )
   ;; (let ((espeon nil))
