@@ -41,12 +41,17 @@
     (sdl2:destroy-texture texture)
     (sdl2:free-rect dst-rect)))
 
+;; (defun load-media (location symbol)
+;;   (let ((file-string (merge-pathnames location +resource-path+)))
+;;     (setf (symbol-value symbol) (sdl2-image:load-image file-string))
+;;     (if (eq (symbol-value symbol) nil)
+;; 	(print-debug :error (format nil  "Failed to load file: ~a" file-string))
+;; 	(print-debug :info (format nil "Loaded file: ~a" file-string)))))
+
 (defun load-media (location symbol)
   (let ((file-string (merge-pathnames location +resource-path+)))
-    (setf (symbol-value symbol) (sdl2-image:load-image file-string))
-    (if (eq (symbol-value symbol) nil)
-	(print-debug :error (format nil  "Failed to load file: ~a" file-string))
-	(print-debug :info (format nil "Loaded file: ~a" file-string)))))
+    (print-debug :debug file-string)
+    (push (cons symbol (sdl2-image:load-image file-string)) images)))
 
 (defun main-loop (renderer window)
   "main game loop called in init environment"

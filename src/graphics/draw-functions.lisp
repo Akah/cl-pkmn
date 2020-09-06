@@ -22,6 +22,24 @@
   (sdl2:set-render-draw-color renderer 70 100 225 0)
   (sdl2:render-fill-rect renderer (sdl2:make-rect 388 291 50 3)))
 
+(defun draw-rect (renderer x y w h)
+  "draw rectangle ")
+
+(defun draw-box (renderer x y w h)
+  "draw box from start (upper-left) to end (lower-right)"
+  
+  (sdl2:set-render-draw-color renderer 255 0 0 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect x y w h))
+  (sdl2:set-render-draw-color renderer 0 0 0 0)
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 4 x) y (- w 8) 2))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 2 x) (+ 2 y) 2 2))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect x (+ 4 y) 2 (- h 8)))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 2 x) (+ y (- h 4)) 2 2))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ 4 x) (+ 8 h) (- w 8) 2))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ x (- w 4)) (+ 6 h) 2 2))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ x (- w 4)) (+ 2 y) 2 2))
+  (sdl2:render-fill-rect renderer (sdl2:make-rect (+ x (- w 2)) (+ 4 y) 2 (- h 8))))
+
 ;; TODO: allow variables otherthan x & y to be optional
 (defun draw-img (img renderer &key x y w h start-x start-y end-x end-y flip)
   "draw image from xy to wh with optional start and end for cropping"
@@ -66,21 +84,27 @@
   (draw-char (string-to-index "EXIT")    renderer font-image 138 120)
   (draw-char (string-to-index "~") renderer font-image 130 *y*))
 
+(defun get-image (symbol-name)
+  (cdr (assoc symbol-name images)))
+
 (defun check-asset (file-name symbol)
-  (when (null symbol)
+  "load image asset when undefined"
+  (when (null (get-image symbol))
     (load-media file-name symbol)))
+
+(defvar *start-menu-state* :menu)
 
 (defun draw-start-menu (renderer)
   (check-asset "img/pokemon.png" 'start-image)
   (check-asset "img/font-v3-4.png" 'font-image)
-  (draw-img start-image renderer
+  (draw-img (get-image 'start-image) renderer
 	    :x 33 :y 35 :w 128 :h 56 :start-x 0 :start-y 0 :end-x 128 :end-y 56)
   (when (eq 0 (mod (floor (/ (sdl2:get-ticks) 750)) 2))
     (draw-text "press any key to start" renderer 8 120)))
 
 (defun draw-player (renderer)
   (check-asset "img/player-sprites.png" 'characters-image)
-  (draw-img characters-image renderer
+  (draw-img (get-image 'characters-image) renderer
 	    :x (player-x player)
 	    :y (player-y player)
 	    :w 16
@@ -91,14 +115,21 @@
 	    :end-y 16
 	    :flip (should-flip player)))
 
- 
 (defun draw-text (string renderer x y)
-  (draw-char (string-to-index string) renderer font-image x y))
+  (draw-char (string-to-index string) renderer (get-image 'font-image) x y))
 
 (defun draw-overworld (renderer)
   (draw-player renderer))
 
-(defun draw-battle (renderer))
+(defun draw-battle (renderer)
+  ;; replace with parameter passed pokemon.
+  ;; eg ""or have all pokemon loaded from one picture
+  ;; (check-asset "img/espeon-back.png" 'espeon-image)
+  ;; (check-asset "img/umbreon-front.png" 'umbreon-image)
+  (check-asset "img/font-v3-4.png" 'font-image)
+  (check-asset "img/umbreon-front.png" 'umbreon-image)
+  ;; (draw-text "Umbreon" renderer 0 0)
+  (draw-box renderer 30 20 200 200))
   ;; (when (null 'espeon)
   ;;   )
   ;; (let ((espeon nil))

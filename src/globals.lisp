@@ -13,9 +13,12 @@
 (defparameter *y* 8)
 (defparameter block-time 0)
 ;; images
-(defparameter characters-image nil)
-(defparameter font-image nil)
-(defparameter start-image nil)
+(defparameter images nil)
+;; (defparameter characters-image nil)
+;; (defparameter font-image nil)
+;; (defparameter start-image nil)
+;; (defparameter player-pokemon nil)
+;; (defparameter enemy-pokemon nil)
 ;; fps
 (defparameter last-time 0)
 (defparameter current-fps 0)
