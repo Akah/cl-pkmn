@@ -40,7 +40,8 @@
 (defun handle-key-menu (keysym)
   (unless (> block-time 1)
     (setf block-time 20) ;; ms?
-    (print-debug :info (format nil "pressed ~a y-pos: ~a" (sdl2:scancode keysym) *y*))
+    (print-debug :info
+		 (format nil "pressed ~a y-pos: ~a" (sdl2:scancode keysym) *y*))
     (case (sdl2:scancode keysym)
       (:scancode-left  (setq *x* (- *x* 0)))
       (:scancode-right (setq *x* (+ *x* 0)))
@@ -51,7 +52,6 @@
 
 (defun handle-key (keysym)
   "take an input and map to output for the key"
-
   (case (sdl2:scancode keysym)
     (:scancode-escape (sdl2:push-event :quit));; swap with menu
     (:scancode-grave  (toggle-pause)); commandline
