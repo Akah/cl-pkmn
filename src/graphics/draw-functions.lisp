@@ -27,12 +27,11 @@
   (sdl2:render-fill-rect renderer (sdl2:make-rect x y w h)))
 
 (defun draw-box (renderer x y w h)
-  "draw box from start (upper-left) to end (lower-right)"
-  (let ((p1 *scale*)
-	(p2 (* 2 *scale*))
-	(p4 (* 4 *scale*)))
-    (sdl2:set-render-draw-color renderer 255 0 0 0)
-    (draw-rect renderer x y w h)
+  (let* ((p1 2)
+	 (p2 (* 2 p1))
+	 (p4 (* 2 p2)))
+    ;; (sdl2:set-render-draw-color renderer 255 255 255 255)
+    ;; (draw-rect renderer x y w h)
     (sdl2:set-render-draw-color renderer 0 0 0 0)
     (draw-rect renderer (+ x p2) y (- w p4) p1)
     (draw-rect renderer (+ x (- w p2)) (+ y p1) p1 p1)
@@ -42,6 +41,13 @@
     (draw-rect renderer (+ x p1) (+ y (- h p2)) p1 p1)
     (draw-rect renderer x (+ y p2) p1 (- h p4))
     (draw-rect renderer (+ x p1) (+ y p1) p1 p1)))
+
+(defun draw-dialog-box (renderer x y w h)
+  "draws box for text to be written"
+  (sdl2:set-render-draw-color renderer 255 255 255 255)
+  (draw-rect renderer x y w h)
+  (draw-box renderer x y w h)
+  (draw-box renderer (+ x 3) (+ y 3) (- w 6) (- h 6)))
 
 ;; TODO: allow variables otherthan x & y to be optional
 (defun draw-img (img renderer &key x y w h start-x start-y end-x end-y flip)
@@ -132,8 +138,7 @@
   (check-asset "img/font-v3-4.png" 'font-image)
   (check-asset "img/umbreon-front.png" 'umbreon-image)
   ;; (draw-text "Umbreon" renderer 0 0)
-  (draw-box renderer 0 0 200 200)
-  (draw-box renderer 250 70 100 100))
+  (draw-dialog-box renderer 0 0 200 200))
   ;; (when (null 'espeon)
   ;;   )
   ;; (let ((espeon nil))
